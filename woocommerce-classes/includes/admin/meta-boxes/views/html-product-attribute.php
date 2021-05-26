@@ -44,13 +44,3 @@ $user_data = get_user_by('id', $user_id);
     </div>
 </div>
 
-<style>
-    .attribute_name.user_name {
-        width: 30%;
-    }
-
-    .inlrow {
-        display: flex;
-        width: 90%;
-    }
-</style>
