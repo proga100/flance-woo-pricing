@@ -5,7 +5,35 @@ class ProductPricing
 {
 	public function __construct()
 	{
-		add_action('wc_cpdf_init', 'wc_custom_product_data_fields', 10, 0);
+		add_action('init', [$this, 'init_run']);
+
+	}
+
+	public function init_run()
+	{
+		add_filter('woocommerce_product_data_tabs', [$this, 'product_pricing_tabs']);
+		add_filter('woocommerce_product_data_panels', [$this, 'action_woocommerce_product_data_panels']);
+
+	}
+
+	public function product_pricing_tabs($tabs)
+	{
+
+		$tabs['_pricing_new'] = array(
+			'label' => __('Woocommerce Specific Pricing', 'flance-woo-pricing'),
+			'target' => 'woo_pricing_tab',
+			'class' => array('show_if_simple', 'show_if_variable'),
+		);
+
+		return $tabs;
+
+	}
+
+	public function action_woocommerce_product_data_panels($data)
+	{
+		global $post, $thepostid, $product_object;
+		include FLANCE_WOO_PRICING_PATH . '/woocommerce-classes/includes/admin/meta-boxes/views/html-product-data-attributes.php';
+
 	}
 
 	/**
@@ -13,113 +41,27 @@ class ProductPricing
 	 *
 	 * @return array
 	 */
-	function wc_custom_product_data_fields()
+	public function wc_custom_product_data_fields($custom_product_data_fields)
 	{
+		$get_all_users = [];
 
-		$custom_product_data_fields = array();
+		foreach (get_users() as $user) {
+			$get_all_users[$user->ID] = $user->display_name;
+		}
 
-		$custom_product_data_fields['ux_product_layout_tab'] = array(
+		$custom_product_data_fields['woo_pricing_tab'] = array(
 			array(
-				'tab_name' => __('Product layout', 'flatsome'),
+				'tab_name' => __('Woocommerce Specific Pricing', 'flance-woo-pricing'),
 			),
 			array(
-				'id' => '_product_block',
-				'type' => 'select',
-				'label' => __('Custom product layout', 'flatsome'),
-				'style' => 'width:100%;height:140px;',
-				'description' => __('Choose a custom product block layout for this product.', 'flatsome'),
+				'id' => '_pricing_new',
+				'type' => 'multiselect',
+				'label' => __('Product specific price for users', 'flance-woo-pricing'),
+				'target' => 'product_attributes',
+				'description' => __('Product specific price for users.', 'flance-woo-pricing'),
 				'desc_tip' => true,
-				'options' => flatsome_get_block_list_by_id(array('option_none' => '-- None --')),
-			),
-			array(
-				'id' => '_top_content',
-				'type' => 'textarea',
-				'label' => __('Top Content', 'flatsome'),
-				'style' => 'width:100%;height:140px;',
-				'description' => __('Enter content that will show after the header and before the product. Shortcodes are allowed', 'flatsome'),
-			),
-			array(
-				'id' => '_bottom_content',
-				'type' => 'textarea',
-				'label' => __('Bottom Content', 'flatsome'),
-				'style' => 'width:100%;height:140px;',
-				'description' => __('Enter content that will show after the product info. Shortcodes are allowed', 'flatsome'),
-			),
-		);
-
-		$custom_product_data_fields['ux_extra_tab'] = array(
-			array(
-				'tab_name' => __('Extra', 'flatsome'),
-			),
-			array(
-				'id' => '_bubble_new',
-				'type' => 'select',
-				'label' => __('Custom Bubble', 'flatsome-admin'),
-				'description' => __('Enable a custom bubble on this product.', 'flatsome'),
-				'desc_tip' => true,
-				'options' => array(
-					'' => 'Disabled',
-					'"yes"' => 'Enabled',
-				),
-			),
-			array(
-				'id' => '_bubble_text',
-				'type' => 'text',
-				'label' => __('Custom Bubble Title', 'flatsome-admin'),
-				'placeholder' => __('NEW', 'flatsome-admin'),
-				'class' => 'large',
-				'description' => __('Field description.', 'flatsome-admin'),
-				'desc_tip' => true,
-			),
-			array(
-				'type' => 'divider',
-			),
-			array(
-				'id' => '_custom_tab_title',
-				'type' => 'text',
-				'label' => __('Custom Tab Title', 'flatsome-admin'),
-				'class' => 'large',
-				'description' => __('Field description.', 'flatsome-admin'),
-				'desc_tip' => true,
-			),
-			array(
-				'id' => '_custom_tab',
-				'type' => 'textarea',
-				'label' => __('Custom Tab Content', 'flatsome'),
-				'style' => 'width:100%;height:140px;',
-				'description' => __('Enter content for custom product tab here. Shortcodes are allowed', 'flatsome'),
-			),
-			array(
-				'type' => 'divider',
-			),
-			array(
-				'id' => '_product_video',
-				'type' => 'text',
-				'placeholder' => 'https://www.youtube.com/watch?v=Ra_iiSIn4OI',
-				'label' => __('Product Video', 'flatsome'),
-				'style' => 'width:100%;',
-				'description' => __('Enter a Youtube or Vimeo Url of the product video here. We recommend uploading your video to Youtube.', 'flatsome'),
-			),
-			array(
-				'id' => '_product_video_size',
-				'type' => 'text',
-				'label' => __('Product Video Size', 'flatsome-admin'),
-				'placeholder' => __('900x900', 'flatsome-admin'),
-				'class' => 'large',
-				'description' => __('Set Product Video Size.. Default is 900x900. (Width X Height)', 'flatsome-admin'),
-				'desc_tip' => true,
-			),
-			array(
-				'id' => '_product_video_placement',
-				'type' => 'select',
-				'label' => __('Product Video Placement', 'flatsome-admin'),
-				'description' => __('Select where you want to display product video.', 'flatsome'),
-				'desc_tip' => true,
-				'options' => array(
-					'' => 'Lightbox (Default)',
-					'tab' => 'New Tab',
-				),
-			),
+				'options' => $get_all_users,
+			)
 		);
 
 		return $custom_product_data_fields;
