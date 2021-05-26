@@ -6,3 +6,24 @@
     display: flex;
     width: 90%;
 }
+
+.price-add-container{
+    margin-top: 20px;
+    margin-left: 15px;
+}
+
+div#woo_pricing_tab label, div#woo_pricing_tab label strong,
+div#woo_pricing_tab strong,
+div#woo_pricing_tab .user_name,
+div#woo_pricing_tab .user_price
+{
+    font-weight: bold;
+}
+
+.price-add-container label {
+    display: block;
+}
+
+select#user_id {
+    width: 70%;
+}

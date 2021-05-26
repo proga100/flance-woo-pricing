@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 $user_data = get_user_by('id', $user_id);
 
 ?>
-<div data-taxonomy="<?php echo esc_attr($user_id); ?>"
+<div data-taxonomy_user_id="<?php echo esc_attr($user_id); ?>" id="fl_user_id_<?php echo esc_attr($user_id); ?>"
      class="woocommerce_attribute wc-metabox postbox closed "
      rel="<?php echo esc_attr($user_id); ?>">
     <h3>
@@ -14,9 +14,9 @@ $user_data = get_user_by('id', $user_id);
         <div class="handlediv" title="<?php esc_attr_e('Click to toggle', 'woocommerce'); ?>"></div>
         <div class="inlrow">
             <div class="attribute_name user_name"><?php echo wc_attribute_label($user_data->display_name); ?></div>
-            <div class="attribute_name user_price"><?php
-                echo get_woocommerce_currency_symbol();
-                echo wc_attribute_label($price); ?></div>
+            <div class="attribute_name user_price user_price_<?php echo esc_attr($user_id); ?>"><?php
+				echo get_woocommerce_currency_symbol();
+				echo wc_attribute_label($price); ?></div>
         </div>
 
     </h3>
@@ -32,11 +32,13 @@ $user_data = get_user_by('id', $user_id);
                 </td>
                 <td rowspan="3">
                     <label>
-                        <?php echo get_woocommerce_currency_symbol(); ?>
+						<?php echo get_woocommerce_currency_symbol(); ?>
 
-                        <?php esc_html_e('Price', 'woocommerce'); ?>:</label>
+						<?php esc_html_e('Price', 'woocommerce'); ?>:</label>
                     <input type="text" name="user_specific_price[<?php echo esc_attr($user_id); ?>]"
-                           class="attribute_position_price" value="<?php echo esc_attr($price); ?>"/>
+                           id="user_specific_price_<?php echo esc_attr($user_id); ?>"
+                           class="attribute_position_price" value="<?php echo esc_attr($price); ?>"
+                           onchange="change_user_price(<?php echo esc_attr($user_id); ?>)"/>
                 </td>
             </tr>
             </tbody>
