@@ -2,6 +2,10 @@
 if (!defined('ABSPATH')) {
 	exit;
 }
+
+wp_enqueue_script('fl_pricing_script', FLANCE_WOO_PRICING_URL . 'assets/pricing.js', array('jquery'), time(), true);
+wp_enqueue_style('fl_pricing', FLANCE_WOO_PRICING_URL . 'assets/pricing.css', time());
+
 global $post;
 $post_id = $post->ID;
 $saved_users = (get_post_meta($post_id, 'user_prices', true)) ? get_post_meta($post_id, 'user_prices', true) : [];
@@ -61,7 +65,7 @@ wp_add_inline_script('fl_pricing_script', 'var all_users = ' . $all_data . ';', 
             </table>
         </div>
 		<?php
-        if ($post_id): ?>
+		if ($post_id): ?>
             <div class="button save_user_price" id="save_user_price">Save Prices</div>
             <div class="addstml stm_loader"></div>
             <div class="prices_save_error"></div>
