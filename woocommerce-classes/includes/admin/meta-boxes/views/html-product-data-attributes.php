@@ -2,20 +2,26 @@
 if (!defined('ABSPATH')) {
 	exit;
 }
-$saved_users = ['56' => 8, '66' => 111];
+global $post;
+$post_id = $post->ID;
+$saved_users = (get_post_meta($post_id, 'user_prices', true)) ? get_post_meta($post_id, 'user_prices', true) : [];
+
 $get_all_users = [];
 foreach (get_users() as $user) {
 	$get_all_users[$user->ID] = $user->display_name;
 }
-$all_data = ["all_user" => $get_all_users, "selected_users" => $saved_users];
-$all_data = json_encode($all_data );
+$nonce = wp_create_nonce("stm_user_save_price");
+$admin_url = admin_url('admin-ajax.php?action=stm_user_save_price&post_id=' . $post_id . '&nonce=' . $nonce);
 
+$all_data = ["all_user" => $get_all_users, "selected_users" => $saved_users, 'admin_url' => $admin_url];
+$all_data = json_encode($all_data);
 
-wp_add_inline_script('fl_pricing_script', 'var all_users = '.$all_data.';', 'before');
+wp_add_inline_script('fl_pricing_script', 'var all_users = ' . $all_data . ';', 'before');
 
 ?>
 <div id="woo_pricing_tab" class="panel wc-metaboxes-wrapper hidden">
     <div class="product_attributes_price wc-metaboxes woocommerce_attribute_data_container">
+        <div id="stm-error"></div>
 		<?php
 
 		$i = -1;
@@ -54,5 +60,11 @@ wp_add_inline_script('fl_pricing_script', 'var all_users = '.$all_data.';', 'bef
                 </tbody>
             </table>
         </div>
+		<?php
+        if ($post_id): ?>
+            <div class="button save_user_price" id="save_user_price">Save Prices</div>
+            <div class="addstml stm_loader"></div>
+            <div class="prices_save_error"></div>
+		<?php endif; ?>
     </div>
 </div>

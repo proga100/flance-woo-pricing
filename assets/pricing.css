@@ -27,3 +27,60 @@ div#woo_pricing_tab .user_price
 select#user_id {
     width: 70%;
 }
+
+#stm-error{
+    color: red;
+    font-size: 14px;
+    width:100%;
+    font-width: bold;
+}
+
+div#save_user_price {
+    margin-top: 20px;
+}
+
+
+
+/* Safari */
+@-webkit-keyframes spin {
+  from {display: block;}
+  to {background-color: yellow;}
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.stm_loader {
+    border: 2px;
+    border-radius: 50%;
+    border-top: 2px solid #3498db;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+.addstml {
+    float: left;
+    margin-top: 23px;
+    margin-left: 10px;
+}
+div#save_user_price {
+    float: left;
+}
+@keyframes open_close {
+    from {
+        display: block;
+    }
+    to {
+        display: none;
+    }
+}
+
+.prices_save_error {
+    clear: both;
+}
+.addstml{
+    display: none;
+}

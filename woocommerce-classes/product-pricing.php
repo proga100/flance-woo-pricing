@@ -6,7 +6,10 @@ class ProductPricing
 	public function __construct()
 	{
 		add_action('init', [$this, 'init_run']);
+		add_action("wp_ajax_stm_user_save_price", [$this, "stm_user_save_price"]);
+		add_action("wp_ajax_nopriv_stm_user_save_price", [$this, "stm_user_save_price"]);
 
+		add_action('save_post', [$this, 'save_post_callback']);
 	}
 
 	public function init_run()
@@ -27,6 +30,36 @@ class ProductPricing
 
 		return $tabs;
 
+	}
+
+	public function stm_user_save_price()
+	{
+
+		if (!wp_verify_nonce($_REQUEST['nonce'], "stm_user_save_price")) {
+			exit("No naughty business please");
+		}
+		$post_id = (int)($_GET['post_id']);
+
+		$user_prices = $_POST['user_prices'];
+
+		if (update_post_meta($post_id, 'user_prices', $user_prices)) {
+			$messages = __('Successfully Prices updated', 'flance-woo-pricing');
+		} else {
+			$messages = __('Successfully Prices updated', 'flance-woo-pricing');
+		}
+
+		wp_send_json(['messages' => $messages, 'user_prices' => $user_prices]);
+	}
+
+	function save_post_callback($post_id)
+	{
+		global $post;
+		if ($post->post_type != 'product') {
+			return;
+		}
+		$user_prices = $_POST['user_specific_price'];
+
+		update_post_meta($post_id, 'user_prices', $user_prices);
 	}
 
 	public function action_woocommerce_product_data_panels($data)

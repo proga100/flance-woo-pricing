@@ -35,9 +35,9 @@ $user_data = get_user_by('id', $user_id);
 						<?php echo get_woocommerce_currency_symbol(); ?>
 
 						<?php esc_html_e('Price', 'woocommerce'); ?>:</label>
-                    <input type="text" name="user_specific_price[<?php echo esc_attr($user_id); ?>]"
+                    <input type="text" data-user-id="<?php echo esc_attr($user_id); ?>" name="user_specific_price[<?php echo esc_attr($user_id); ?>]"
                            id="user_specific_price_<?php echo esc_attr($user_id); ?>"
-                           class="attribute_position_price" value="<?php echo esc_attr($price); ?>"
+                           class="attribute_position_price set_user_price" value="<?php echo esc_attr($price); ?>"
                            onchange="change_user_price(<?php echo esc_attr($user_id); ?>)"/>
                 </td>
             </tr>
